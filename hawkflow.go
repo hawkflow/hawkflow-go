@@ -14,7 +14,7 @@ import (
 const (
 	// _ENDPOINT must end with backslash
 	_ENDPOINT = "https://api.hawkflow.ai/v1/"
-	_TIMEOUT  = 100 * time.Millisecond
+	_TIMEOUT  = 1000 * time.Millisecond
 )
 
 type httpClient interface {
