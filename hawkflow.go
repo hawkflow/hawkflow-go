@@ -3,6 +3,7 @@ package hawkflow
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -39,7 +40,7 @@ type request struct {
 	Process          string             `json:"process"`
 	Meta             string             `json:"meta,omitempty"`
 	UID              string             `json:"uid,omitempty"`
-	ExceptionMessage string             `json:"exception_text,omitempty"`
+	ExceptionMessage string             `json:"exception,omitempty"`
 	Items            map[string]float64 `json:"items,omitempty"`
 }
 
@@ -174,33 +175,33 @@ func (hfc *client) Metrics(process, meta string, items map[string]float64) error
 	return hfc.sendWithRetry(r, "metrics", hfc.maxRetries)
 }
 
-func (hfc *client) sendWithRetry(r *request, path string, retry uint8) error {
-	if 0 >= retry {
+func (hfc *client) sendWithRetry(r *request, path string, count uint8) error {
+	if 0 >= count {
 		return createError("Connection failed permanently.")
 	}
 
-	statusCode, err := hfc.send(r, path)
-	if nil != err || statusCode != http.StatusCreated {
-		hfc.log(fmt.Sprintf("Connection failed with status code %d on attempt: %d", statusCode, retry))
-		if 0 == statusCode {
+	retry, err := hfc.send(r, path)
+	if nil != err {
+		hfc.log(fmt.Sprintf("Connection failed on attempt %d with error: %s", count, err))
+		if !retry {
 			return err
 		}
-		return hfc.sendWithRetry(r, path, retry-1)
+		return hfc.sendWithRetry(r, path, count-1)
 	}
 
 	return nil
 }
 
-func (hfc *client) send(r *request, path string) (int, error) {
+func (hfc *client) send(r *request, path string) (bool, error) {
 	err := validateApiKey(hfc.apiKey)
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
 	body := new(bytes.Buffer)
 	err = json.NewEncoder(body).Encode(r)
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
 	hfc.log(fmt.Sprintf("Requesting path: %s", path))
@@ -208,7 +209,7 @@ func (hfc *client) send(r *request, path string) (int, error) {
 
 	req, err := http.NewRequest("POST", hfc.endpoint+path, body)
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
 	req.Header.Set("content-type", "application/json")
@@ -216,15 +217,20 @@ func (hfc *client) send(r *request, path string) (int, error) {
 
 	resp, err := hfc.httpClient.Do(req)
 	if err != nil {
-		return 0, err
+		return true, err
 	}
 	defer resp.Body.Close()
+	respBody, _ := io.ReadAll(resp.Body)
 
 	hfc.log(fmt.Sprintf("Response Status: %s", resp.Status))
-	if hfc.debug {
-		respBody, _ := io.ReadAll(resp.Body)
-		hfc.log(fmt.Sprintf("Response Body: %s", respBody))
+	hfc.log(fmt.Sprintf("Response Body: %s", respBody))
+
+	if http.StatusUnauthorized == resp.StatusCode {
+		return false, errors.New(string(respBody))
+	}
+	if http.StatusCreated != resp.StatusCode {
+		return true, errors.New(string(respBody))
 	}
 
-	return resp.StatusCode, nil
+	return false, nil
 }
