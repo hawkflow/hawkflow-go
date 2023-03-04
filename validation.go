@@ -104,10 +104,6 @@ func validateUID(uid string) error {
 }
 
 func validateExceptionMessage(exceptionMessage string) error {
-	if exceptionMessage == "" {
-		return createError("No exception message set.")
-	}
-
 	if len(exceptionMessage) > 15000 {
 		return createError("ExceptionMessage parameter exceeded max length of 15000 characters.")
 	}

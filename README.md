@@ -41,7 +41,7 @@ func main() {
 
 More examples: [HawkFlow.ai Go examples](https://github.com/hawkflow/hawkflow-examples/tree/master/go)
 
-Read the docs: [HawkFlow.ai documentation](http://docs.hawkflow.ai/)
+Read the docs: [HawkFlow.ai documentation](https://docs.hawkflow.ai/)
 
 ## What is HawkFlow.ai?
 

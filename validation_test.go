@@ -113,7 +113,6 @@ func TestValidateException(t *testing.T) {
 				Process:          "process",
 				ExceptionMessage: "exception message",
 			},
-			error: "",
 		},
 		"Valid exception request with meta": {
 			r: &request{
@@ -121,19 +120,17 @@ func TestValidateException(t *testing.T) {
 				Meta:             "meta",
 				ExceptionMessage: "exception message",
 			},
-			error: "",
+		},
+		"Valid request - missing exception message": {
+			r: &request{
+				Process: "process",
+			},
 		},
 		"Invalid request - missing process": {
 			r: &request{
 				ExceptionMessage: "exception message",
 			},
 			error: "No process set. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
-		},
-		"Invalid request - missing exception message": {
-			r: &request{
-				Process: "process",
-			},
-			error: "No exception message set. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 	}
 

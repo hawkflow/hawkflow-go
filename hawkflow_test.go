@@ -297,11 +297,6 @@ func TestException(t *testing.T) {
 			expectedCount: 0,
 			error:         "No process set. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
-		"Request was validated - missing exception message": {
-			process:       "test_process",
-			expectedCount: 0,
-			error:         "No exception message set. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
-		},
 		"Request was retried X times": {
 			process:               "test_process",
 			message:               "test exception message",
