@@ -114,7 +114,7 @@ func (hfc *client) Start(process, meta, uid string) error {
 		UID:     uid,
 	}
 
-	err := validateTime(r)
+	err := validateTimedData(r)
 	if err != nil {
 		return err
 	}
@@ -131,7 +131,7 @@ func (hfc *client) End(process, meta, uid string) error {
 		UID:     uid,
 	}
 
-	err := validateTime(r)
+	err := validateTimedData(r)
 	if err != nil {
 		return err
 	}
@@ -165,7 +165,7 @@ func (hfc *client) Metrics(process, meta string, items map[string]float64) error
 		Items:   items,
 	}
 
-	err := validateMetric(r)
+	err := validateMetrics(r)
 	if err != nil {
 		return err
 	}

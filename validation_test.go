@@ -10,23 +10,7 @@ func TestValidateApiKey(t *testing.T) {
 		error  string
 	}{
 		"Valid API key": {
-			apiKey: "api_key",
-			error:  "",
-		},
-		"Valid API key - numbers": {
-			apiKey: "1234567890",
-			error:  "",
-		},
-		"Valid API key - lower case letters": {
-			apiKey: "abcdefghijklmnopqrstuvwxyz",
-			error:  "",
-		},
-		"Valid API key - upper case letters": {
-			apiKey: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-			error:  "",
-		},
-		"Valid API key - special characters": {
-			apiKey: "_-",
+			apiKey: "api _ Key   -123",
 			error:  "",
 		},
 		"Empty API key": {
@@ -38,7 +22,7 @@ func TestValidateApiKey(t *testing.T) {
 			error:  "Invalid API Key format. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Invalid API key": {
-			apiKey: "Spaces and unsupported characters % 🦅",
+			apiKey: "invalid api key ❌",
 			error:  "Invalid API Key format. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 	}
@@ -57,7 +41,7 @@ func TestValidateApiKey(t *testing.T) {
 	}
 }
 
-func TestValidateTime(t *testing.T) {
+func TestValidateTimedData(t *testing.T) {
 	testCases := map[string]struct {
 		r     *request
 		error string
@@ -78,6 +62,13 @@ func TestValidateTime(t *testing.T) {
 		"Valid time request with UID": {
 			r: &request{
 				Process: "process",
+				UID:     "uid",
+			},
+			error: "",
+		},
+		"Valid time request with meta and UID": {
+			r: &request{
+				Process: "process",
 				Meta:    "meta",
 				UID:     "uid",
 			},
@@ -91,7 +82,7 @@ func TestValidateTime(t *testing.T) {
 
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
-			err := validateTime(testCase.r)
+			err := validateTimedData(testCase.r)
 			errorMsg := ""
 			if err != nil {
 				errorMsg = err.Error()
@@ -148,7 +139,7 @@ func TestValidateException(t *testing.T) {
 	}
 }
 
-func TestValidateMetric(t *testing.T) {
+func TestValidateMetrics(t *testing.T) {
 	testCases := map[string]struct {
 		r     *request
 		error string
@@ -199,7 +190,7 @@ func TestValidateMetric(t *testing.T) {
 
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
-			err := validateMetric(testCase.r)
+			err := validateMetrics(testCase.r)
 			errorMsg := ""
 			if err != nil {
 				errorMsg = err.Error()
@@ -217,23 +208,7 @@ func TestValidateProcess(t *testing.T) {
 		error   string
 	}{
 		"Valid process": {
-			process: "process",
-			error:   "",
-		},
-		"Valid process - numbers": {
-			process: "1234567890",
-			error:   "",
-		},
-		"Valid process - lower case letters": {
-			process: "abcdefghijklmnopqrstuvwxyz",
-			error:   "",
-		},
-		"Valid process - upper case letters": {
-			process: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-			error:   "",
-		},
-		"Valid process - special characters": {
-			process: "_-",
+			process: "process _ Name   -123",
 			error:   "",
 		},
 		"Empty process": {
@@ -245,7 +220,7 @@ func TestValidateProcess(t *testing.T) {
 			error:   "Process parameter exceeded max length of 250 characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Invalid process": {
-			process: "Spaces and unsupported characters % 🦅",
+			process: "invalid process ❌",
 			error:   "Process parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 	}
@@ -270,23 +245,11 @@ func TestValidateMeta(t *testing.T) {
 		error string
 	}{
 		"Valid meta": {
-			meta:  "meta",
+			meta:  "meta _ Data   -123",
 			error: "",
 		},
-		"Valid meta - numbers": {
-			meta:  "1234567890",
-			error: "",
-		},
-		"Valid meta - lower case letters": {
-			meta:  "abcdefghijklmnopqrstuvwxyz",
-			error: "",
-		},
-		"Valid meta - upper case letters": {
-			meta:  "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-			error: "",
-		},
-		"Valid meta - special characters": {
-			meta:  "_-",
+		"Empty meta": {
+			meta:  "",
 			error: "",
 		},
 		"Too long meta": {
@@ -294,7 +257,7 @@ func TestValidateMeta(t *testing.T) {
 			error: "Meta parameter exceeded max length of 500 characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Invalid meta": {
-			meta:  "Spaces and unsupported characters % 🦅",
+			meta:  "invalid meta ❌",
 			error: "Meta parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 	}
@@ -319,23 +282,11 @@ func TestValidateUID(t *testing.T) {
 		error string
 	}{
 		"Valid UID": {
-			uid:   "uid",
+			uid:   "uid _ UID   -123",
 			error: "",
 		},
-		"Valid UID - numbers": {
-			uid:   "1234567890",
-			error: "",
-		},
-		"Valid UID - lower case letters": {
-			uid:   "abcdefghijklmnopqrstuvwxyz",
-			error: "",
-		},
-		"Valid UID - upper case letters": {
-			uid:   "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-			error: "",
-		},
-		"Valid UID - special characters": {
-			uid:   "_-",
+		"Empty UID": {
+			uid:   "",
 			error: "",
 		},
 		"Too long UID": {
@@ -343,7 +294,7 @@ func TestValidateUID(t *testing.T) {
 			error: "UID parameter exceeded max length of 50 characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Invalid UID": {
-			uid:   "Spaces and unsupported characters % 🦅",
+			uid:   "invalid uid ❌",
 			error: "UID parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 	}
@@ -368,7 +319,11 @@ func TestValidateExceptionMessage(t *testing.T) {
 		error   string
 	}{
 		"Valid exception message": {
-			message: "Exception message!",
+			message: "Exception message ✅",
+			error:   "",
+		},
+		"Empty exception message": {
+			message: "",
 			error:   "",
 		},
 		"Too long exception message": {
@@ -380,6 +335,42 @@ func TestValidateExceptionMessage(t *testing.T) {
 	for name, testCase := range testCases {
 		t.Run(name, func(t *testing.T) {
 			err := validateExceptionMessage(testCase.message)
+			errorMsg := ""
+			if err != nil {
+				errorMsg = err.Error()
+			}
+			if errorMsg != testCase.error {
+				t.Errorf("%v expected, got %v", testCase.error, errorMsg)
+			}
+		})
+	}
+}
+
+func TestValidateMetricsItems(t *testing.T) {
+	testCases := map[string]struct {
+		items map[string]float64
+		error string
+	}{
+		"Valid metrics items": {
+			items: map[string]float64{"key": 123},
+			error: "",
+		},
+		"Empty metrics items": {
+			error: "No items set. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
+		},
+		"Empty metrics items key": {
+			items: map[string]float64{"": 123.45},
+			error: "",
+		},
+		"Too long metrics items key": {
+			items: map[string]float64{"________10________20________30________40________50x": 123},
+			error: "Item key ________10________20________30________40________50x exceeded max length of 50 characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
+		},
+	}
+
+	for name, testCase := range testCases {
+		t.Run(name, func(t *testing.T) {
+			err := validateMetricsItems(testCase.items)
 			errorMsg := ""
 			if err != nil {
 				errorMsg = err.Error()

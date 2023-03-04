@@ -4,7 +4,8 @@
 
 ## Monitoring for anyone that writes code
 
-Usage
+1. Install: `go mod download`
+2. Usage:
 
 ```go
 package main
@@ -19,23 +20,17 @@ func main() {
 	// Authenticate with your API key
 	hf := hawkflow.New("YOUR_API_KEY")
 
-	// Start timing your code - pass through process (required) and meta (optional) parameters
+	// Start timing your code - pass through process (required), meta (optional), uid (optional) parameters
 	fmt.Println("Sending timing start data to hawkflow")
-	err := hf.Start("hawkflow_examples", "your_meta_data", "")
-	if err != nil {
-		fmt.Println(err)
-	}
+	_ = hf.Start("hawkflow_examples", "", "")
 
 	// Do some work
 	fmt.Println("Sleeping for 5 seconds...")
 	time.Sleep(5 * time.Second)
 
-	// End timing this piece of code - process (required) and meta (optional) parameters should match the start
+	// End timing this piece of code - process (required), meta (optional), uid (optional) parameters should match the start
 	fmt.Println("Sending timing end data to hawkflow")
-	err = hf.End("hawkflow_examples", "your_meta_data", "")
-	if err != nil {
-		fmt.Println(err)
-	}
+	_ = hf.End("hawkflow_examples", "", "")
 }
 ```
 
@@ -48,3 +43,10 @@ Read the docs: [HawkFlow.ai documentation](https://docs.hawkflow.ai/)
 HawkFlow.ai is a new monitoring platform that makes it easier than ever to make monitoring part of your development
 process. Whether you are an Engineer, a Data Scientist, an Analyst, or anyone else that writes code, HawkFlow.ai helps
 you and your team take ownership of monitoring.
+
+# Testing this package
+
+1. Install dependencies: `go mod download`
+2. Run tests: `go test` 
+
+

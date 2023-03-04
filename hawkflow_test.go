@@ -92,7 +92,7 @@ func TestStart(t *testing.T) {
 			expectedRequestUrl:    "https://api.hawkflow.ai/v1/start",
 		},
 		"Request was validated - process": {
-			process:       "invalid process",
+			process:       "invalid process ❌",
 			expectedCount: 0,
 			error:         "Process parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
@@ -102,13 +102,13 @@ func TestStart(t *testing.T) {
 		},
 		"Request was validated - meta": {
 			process:       "test_process",
-			meta:          "invalid meta",
+			meta:          "invalid meta ❌",
 			expectedCount: 0,
 			error:         "Meta parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Request was validated - uid": {
 			process:       "test_process",
-			uid:           "invalid uid",
+			uid:           "invalid uid ❌",
 			expectedCount: 0,
 			error:         "UID parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
@@ -190,7 +190,7 @@ func TestEnd(t *testing.T) {
 			expectedRequestUrl:    "https://api.hawkflow.ai/v1/end",
 		},
 		"Request was validated - process": {
-			process:       "invalid process",
+			process:       "invalid process ❌",
 			expectedCount: 0,
 			error:         "Process parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
@@ -200,13 +200,13 @@ func TestEnd(t *testing.T) {
 		},
 		"Request was validated - meta": {
 			process:       "test_process",
-			meta:          "invalid meta",
+			meta:          "invalid meta ❌",
 			expectedCount: 0,
 			error:         "Meta parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Request was validated - uid": {
 			process:       "test_process",
-			uid:           "invalid uid",
+			uid:           "invalid uid ❌",
 			expectedCount: 0,
 			error:         "UID parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
@@ -288,14 +288,23 @@ func TestException(t *testing.T) {
 			expectedRequestMethod: "POST",
 			expectedRequestUrl:    "https://api.hawkflow.ai/v1/exception",
 		},
-		"Request was validated - process": {
-			process:       "invalid process",
-			expectedCount: 0,
-			error:         "Process parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
-		},
 		"Request was validated - missing process": {
 			expectedCount: 0,
 			error:         "No process set. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
+		},
+		"Request was validated - missing message": {
+			process:               "test_process",
+			statusCode:            201,
+			count:                 2,
+			expectedCount:         1,
+			expectedRequestBody:   `{"process":"test_process"}`,
+			expectedRequestMethod: "POST",
+			expectedRequestUrl:    "https://api.hawkflow.ai/v1/exception",
+		},
+		"Request was validated - process": {
+			process:       "invalid process ❌",
+			expectedCount: 0,
+			error:         "Process parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Request was retried X times": {
 			process:               "test_process",
@@ -377,7 +386,7 @@ func TestMetrics(t *testing.T) {
 			expectedRequestUrl:    "https://api.hawkflow.ai/v1/metrics",
 		},
 		"Request was validated - process": {
-			process:       "invalid process",
+			process:       "invalid process ❌",
 			expectedCount: 0,
 			error:         "Process parameter contains unsupported characters. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
@@ -459,7 +468,7 @@ func TestSendWithRetry(t *testing.T) {
 			error:         "Connection failed permanently. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 		},
 		"Invalid interrupted": {
-			apiKey:        "invalid api key",
+			apiKey:        "invalid api key ❌",
 			statusCode:    0,
 			count:         4,
 			expectedCount: 0,
@@ -523,7 +532,7 @@ func TestSendValidateApiKeyIsCalled(t *testing.T) {
 			expectedRetry: false,
 		},
 		"Invalid API key": {
-			apiKey:        "api % # key",
+			apiKey:        "invalid api key ❌",
 			statusCode:    -1,
 			error:         "Invalid API Key format. Please see documentation at https://docs.hawkflow.ai/integration/index.html",
 			expectedRetry: false,
